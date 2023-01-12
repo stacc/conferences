@@ -1,0 +1,104 @@
+name: "✈️ Travel/Conference Request"
+description: Create a new travel request ticket for a conference
+title: "💡 [REQUEST] - <title>"
+labels: [
+  "request",
+  "travel"
+]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Exciting! Please share!
+  - type: input
+    id: start_date
+    attributes:
+      label: "Start Date"
+      description: Start date of the conference
+      placeholder: "month/day/year"
+    validations:
+      required: true
+  - type: input
+    id: end_date
+    attributes:
+      label: "End Date"
+      description: End date of the conference
+      placeholder: "month/day/year"
+    validations:
+      required: true
+  - type: input
+    id: return_date
+    attributes:
+      label: "Return Date"
+      description: Mostly important if weekday,
+      placeholder: "month/day/year"
+    validations:
+      required: false
+  - type: textarea
+    id: conference_name
+    attributes:
+      label: "Conference Name"
+      description: Conference name
+      placeholder: "ReactConf2040"
+    validations:
+      required: true
+  - type: textarea
+    id: conference_url
+    attributes:
+      label: "Conference URL"
+      description: Conference URL
+      placeholder: "https://reactconf.com"
+    validations:
+      required: false
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: Provide a brief explanation of the request
+      placeholder: Describe in a few lines your request
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected costs
+      description: |
+        examples:
+          | Name       | Cost    |
+          |------------|---------|
+          | Conference Pass |   $350      |
+          | Transport        |   NOK 5000      |
+          | Accommodations   |   $1000      |
+          | Food             |    $500     |
+          |------------|---------|
+          | Total             |    Please calculate it in a single currency     |
+      value: |
+        | Name       | Cost    |
+        |------------|---------|
+        | Conference Pass |         |
+        | Transport        |         |
+        | Accommodations   |         |
+        | Food             |         |
+        |------------|---------|
+        | Total             |         |
+      render: markdown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: company
+    attributes:
+      label: Company
+      description: Which company do you belong to?
+      options:
+        - X
+        - Flow
+    validations:
+      required: true
+  - type: checkboxes
+    id: alone
+    attributes:
+      label: Traveling alone?
+      description: Are you traveling alone?
+      options:
+        - label: Yes
+          required: true

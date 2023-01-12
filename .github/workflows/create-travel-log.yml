@@ -1,0 +1,46 @@
+name: Initialize travel log
+
+on:
+  issues:
+    types: [labeled, assigned, opened]
+
+jobs:
+  initialize:
+    name: Initialize values for each type
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.initialize.outputs.travel-log }}
+      filename: ${{ steps.initialize.outputs.filename }}
+      name: ${{ steps.initialize.outputs.name }}
+      title: ${{ steps.initialize.outputs.title }}
+    steps:
+      - name: Initialize values and travel log file
+        id: values
+        run: |
+          title=$(echo ${{ github.event.issue.user.name }} goes to ${{ github.event.issue.title }})
+          name=$(echo ${title}  | sed 's/ /-/g')
+          filename=$(echo ${name} | sed 's/$/ .md/g')
+          branch="travels/${{ steps.values.outputs.name }}"
+  on-open:
+    needs: initialize
+    name: Travel request created
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Initialize values and travel log file
+        id: values
+        run: |
+          echo "## ${name}" > travel-logs/${{needs.initialize.outputs.filename}}
+      - name: Create Issue Branch
+        uses: gr2m/create-or-update-pull-request-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: "travels/${{ steps.values.outputs.filename }}"
+          title: "Travel log for: ${{ github.event.issue.title }}"
+          body: ${{ github.event.issue.body }}
+          path: "travel-logs/"
+          commit-message: "docs(${{ github.event.issue.user.name }}): Create travel log"
+          labels: ${{ github.event.issue.labels }}
+          assignees: ${{ github.event.issue.assignees }}
