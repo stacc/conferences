@@ -1,10 +1,7 @@
 name: "✈️ Travel/Conference Request"
 description: Create a new travel request ticket for a conference
 title: "💡 [REQUEST] - <title>"
-labels: [
-  "request",
-  "travel"
-]
+labels: ["request","travel"]
 body:
   - type: markdown
     attributes:
