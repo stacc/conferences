@@ -86,8 +86,8 @@ body:
       label: Company
       description: Which company do you belong to?
       options:
-        - X
-        - Flow
+        - "X"
+        - "Flow"
     validations:
       required: true
   - type: checkboxes
