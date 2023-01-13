@@ -96,5 +96,5 @@ body:
       label: Traveling alone?
       description: Are you traveling alone?
       options:
-        - label: Yes
+        - label: "Yes"
           required: true
