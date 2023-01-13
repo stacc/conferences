@@ -1,6 +1,6 @@
 name: "✈️ Travel/Conference Request"
 description: Create a new travel request ticket for a conference
-title: "💡 [REQUEST] - <title>"
+title: "<title>"
 labels: ["request","travel"]
 body:
   - type: markdown
@@ -90,11 +90,12 @@ body:
         - "Flow"
     validations:
       required: true
-  - type: checkboxes
+  - type: dropdown
     id: alone
     attributes:
-      label: Traveling alone?
-      description: Are you traveling alone?
+      label: Mode
+      description: Choose a mode?
       options:
-        - label: "Yes"
-          required: true
+        - "Alone"
+        - "With a colleague"
+        - "With a team"

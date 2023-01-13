@@ -1,5 +1,5 @@
 name: Initialize travel log
-
+run-name: Reacting to ${{ github.event.issue.title }} by @${{ github.actor }}
 on:
   issues:
     types: [labeled, assigned, opened]
@@ -17,13 +17,13 @@ jobs:
       - name: Initialize values and travel log file
         id: values
         run: |
-          title=$(echo ${{ github.event.issue.user.name }} goes to ${{ github.event.issue.title }})
-          name=$(echo ${title}  | sed 's/ /-/g')
-          filename=$(echo ${name} | sed 's/$/ .md/g')
-          branch="travels/${{ steps.values.outputs.name }}"
-  on-open:
+          title=$(echo ${{ github.event.issue.user.name }} goes to ${{ github.event.issue.title }}) >> $GITHUB_OUTPUT
+          name=$(echo ${title}  | sed 's/ /-/g') >> $GITHUB_OUTPUT
+          filename=$(echo ${name} | sed 's/$/ .md/g') >> $GITHUB_OUTPUT
+          branch="travels/${{ steps.values.outputs.name }}" >> $GITHUB_OUTPUT
+  on-event:
     needs: initialize
-    name: Travel request created
+    name: Create or update pull request
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: "travels/${{ steps.values.outputs.filename }}"
+          branch: "travels/${{ needs.initialize.outputs.name }}"
           title: "Travel log for: ${{ github.event.issue.title }}"
           body: ${{ github.event.issue.body }}
           path: "travel-logs/"
