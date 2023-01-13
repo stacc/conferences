@@ -12,7 +12,7 @@ body:
     attributes:
       label: "Start Date"
       description: Start date of the conference
-      placeholder: "month/day/year"
+      placeholder: "day.month-year"
     validations:
       required: true
   - type: input
@@ -20,7 +20,7 @@ body:
     attributes:
       label: "End Date"
       description: End date of the conference
-      placeholder: "month/day/year"
+      placeholder: "day.month-year"
     validations:
       required: true
   - type: input
@@ -28,7 +28,7 @@ body:
     attributes:
       label: "Return Date"
       description: Mostly important if weekday,
-      placeholder: "month/day/year"
+      placeholder: "day.month-year"
     validations:
       required: false
   - type: textarea
