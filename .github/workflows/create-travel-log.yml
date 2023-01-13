@@ -2,7 +2,7 @@ name: Initialize travel log
 run-name: Reacting to ${{ github.event.issue.title }} by @${{ github.actor }}
 on:
   issues:
-    types: [labeled, assigned, opened]
+    types: [labeled, assigned, opened, edited]
 
 permissions:
   id-token: read
