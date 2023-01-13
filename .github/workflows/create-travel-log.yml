@@ -4,15 +4,21 @@ on:
   issues:
     types: [labeled, assigned, opened]
 
+permissions:
+  id-token: read
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   initialize:
     name: Initialize values for each type
     runs-on: ubuntu-latest
     outputs:
-      branch: ${{ steps.initialize.outputs.travel-log }}
-      filename: ${{ steps.initialize.outputs.filename }}
-      name: ${{ steps.initialize.outputs.name }}
-      title: ${{ steps.initialize.outputs.title }}
+      branch: ${{ steps.values.outputs.travel-log }}
+      filename: ${{ steps.values.outputs.filename }}
+      name: ${{ steps.values.outputs.name }}
+      title: ${{ steps.values.outputs.title }}
     steps:
       - name: Initialize values and travel log file
         id: values
