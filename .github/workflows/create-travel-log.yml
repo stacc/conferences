@@ -45,7 +45,7 @@ jobs:
           branch: "travels/${{ needs.initialize.outputs.name }}"
           title: "Travel log for: ${{ github.event.issue.title }}"
           body: ${{ github.event.issue.body }}
-          path: "travel-logs/"
+          path: "travel-logs/${{title}}"
           commit-message: "docs(${{ github.event.issue.user.name }}): Create travel log"
           labels: ${{ github.event.issue.labels }}
           assignees: ${{ github.event.issue.assignees }}
