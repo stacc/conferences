@@ -29,7 +29,7 @@ jobs:
           filename=$(echo $name | sed 's/$/.md/')
           echo "filename=$filename" >> $GITHUB_OUTPUT
           branch='travels/${{ steps.values.outputs.name }}'
-          echo "branch=$branch >> $GITHUB_OUTPUT
+          echo "branch=$branch" >> $GITHUB_OUTPUT
           echo "Title is $title" >> $GITHUB_STEP_SUMMARY
           echo "Name is $name" >> $GITHUB_STEP_SUMMARY
           echo "Filename is $filename" >> $GITHUB_STEP_SUMMARY
