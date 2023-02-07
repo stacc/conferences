@@ -36,7 +36,7 @@ jobs:
           branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
           labels=$(jq -r '.issue.labels|map(.name)|join(", ")' $GITHUB_EVENT_PATH)
-          labels_no_comma=$(jq -r '.issue.labels|map(.name)|join("--label ")' $GITHUB_EVENT_PATH)
+          labels_no_comma=$(jq -r '.issue.labels|map(.name)|join(" --label ")' $GITHUB_EVENT_PATH)
           echo "labels=$labels" >> $GITHUB_OUTPUT
           echo "labels_no_comma=$labels_no_comma" >> $GITHUB_OUTPUT
           assignees=$(jq -r '.issue.assignees|map(.login)|join(", ")' $GITHUB_EVENT_PATH)
