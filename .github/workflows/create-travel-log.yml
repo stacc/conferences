@@ -71,7 +71,7 @@ jobs:
           echo "Creating pull request" >> $GITHUB_STEP_SUMMARY
           git config --global user.name ${{ github.actor }}
           git checkout -b ${{ needs.initialize.outputs.branch }}
-          mkdir -p travels
+          mkdir -p travel-logs
           echo "## ${{ needs.initialize.outputs.title }}" > travel-logs/${{ needs.initialize.outputs.filename }}
           git add travel-logs/${{ needs.initialize.outputs.filename }}
           git commit -m "feat(travels): ${{ needs.initialize.outputs.title }}"
