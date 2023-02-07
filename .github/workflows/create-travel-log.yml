@@ -2,7 +2,9 @@ name: Initialize travel log
 run-name: Reacting to ${{ github.event.issue.title }} by @${{ github.actor }}
 on:
   issues:
-    types: [labeled, assigned, opened, edited, reopened]
+    types: [closed]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
@@ -42,29 +44,95 @@ jobs:
           echo "Branch is $branch" >> $GITHUB_STEP_SUMMARY
           echo "Labels are $labels" >> $GITHUB_STEP_SUMMARY
           echo "Assignees are $assignees" >> $GITHUB_STEP_SUMMARY
-  on-event:
+  on-comment:
+    if: ${{ github.event_name == 'issue_comment' }}
     needs: initialize
-    name: Create or update pull request
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Initialize values and travel log file
-        id: values
+      - name: Check user is assignee
+        if: ${{ contains(github.event.issue.assignees.*.login, github.actor) }}
         run: |
-          mkdir -p travel-logs
-          echo "## ${{ needs.initialize.outputs.title }}" >> travel-logs/${{needs.initialize.outputs.filename}}
-      - name: Create Issue Branch
-        uses: gr2m/create-or-update-pull-request-action@v1
+          echo "User is assignee" >> $GITHUB_STEP_SUMMARY
+      - name: Check if comment is ok
+        if: ${{ contains(github.event.issue.assignees.*.login, github.actor) }}
+        run: |
+          if [[ ${{ github.event.comment.body }} == "Ok!" ]]; then
+            echo "Comment is ok" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Comment is not ok" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+      - name: Checkout
+        if: success()
+        uses: actions/checkout@v3
+      - name: Create branch
+        id: create
+        run: |
+          echo "Creating pull request" >> $GITHUB_STEP_SUMMARY
+          git config --global user.name ${{ github.actor }}
+          git checkout -b ${{ needs.initialize.outputs.branch }}
+          mkdir -p travels
+          echo "## ${{ needs.initialize.outputs.title }}" > travel-logs/${{ needs.initialize.outputs.filename }}
+          git add travel-logs/${{ needs.initialize.outputs.filename }}
+          git commit -m "feat(travels): ${{ needs.initialize.outputs.title }}"
+          git push origin ${{ needs.initialize.outputs.branch }}
+      - name: Create Pull request
+        if: success()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: ${{ needs.initialize.outputs.branch }}
           title: ${{ needs.initialize.outputs.title }}
-          body: |
-            ${{ github.event.issue.body }}
-          path: "travel-logs"
-          commit-message: "docs(${{ github.actor }}): Create travel log"
+          branch: ${{ needs.initialize.outputs.branch }}
           labels: ${{ needs.initialize.outputs.labels }}
-          reviewers: ${{ needs.initialize.outputs.assignees }}
-          update-pull-request-title-and-body: true
+          name: ${{ needs.initialize.outputs.name }}
+          assignee: ${{ github.event.issue.user.login }}
+          reviewer: ${{ github.actor }}
+          number: '#${{ github.event.issue.number }}'
+        run: |
+          gh pr create -t $title -b "This is the travel log for ${{ needs.initialize.outputs.title }} and closes $number" -label $labels -a $assignee -r $reviewer  --base $branch --draft
+  on-issue-closed:
+    if: ${{ github.event_name == 'issues' && github.event.action == 'closed' }}
+    needs: initialize
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR exists
+        id: check
+        run: |
+          if [[ $(gh pr list -s open -L 1 -R ${{ github.repository }} -B ${{ needs.initialize.outputs.branch }}) ]]; then
+            echo "PR exists" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "PR does not exist" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+      - name: Close PR
+        if: success()
+        env:
+          number: '#${{ github.event.issue.number }}'
+          branch: ${{ needs.initialize.outputs.branch }}
+        run: |
+          echo "Closing PR" >> $GITHUB_STEP_SUMMARY
+          gh pr close $branch -c "Issue $number was closed by ${{ github.actor }} and closes this linked PR"
+#  on-event:
+#    needs: initialize
+#    name: Create or update pull request
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Initialize values and travel log file
+#        id: values
+#        run: |
+#          mkdir -p travel-logs
+#          echo "## ${{ needs.initialize.outputs.title }}" >> travel-logs/${{needs.initialize.outputs.filename}}
+#      - name: Create Issue Branch
+#        uses: gr2m/create-or-update-pull-request-action@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          branch: ${{ needs.initialize.outputs.branch }}
+#          title: ${{ needs.initialize.outputs.title }}
+#          body: |
+#            ${{ github.event.issue.body }}
+#          path: "travel-logs"
+#          commit-message: "docs(${{ github.actor }}): Create travel log"
+#          labels: ${{ needs.initialize.outputs.labels }}
+#          reviewers: ${{ needs.initialize.outputs.assignees }}
+#          update-pull-request-title-and-body: true
