@@ -14,7 +14,7 @@ jobs:
     name: Initialize values for each type
     runs-on: ubuntu-latest
     outputs:
-      branch: ${{ steps.values.outputs.travel-log }}
+      branch: ${{ steps.values.outputs.branch }}
       filename: ${{ steps.values.outputs.filename }}
       name: ${{ steps.values.outputs.name }}
       title: ${{ steps.values.outputs.title }}
@@ -22,10 +22,10 @@ jobs:
       - name: Initialize values and travel log file
         id: values
         run: |
-          title=$(echo ${{ github.event.issue.user.name }} goes to ${{ github.event.issue.title }}) >> $GITHUB_OUTPUT
-          name=$(echo ${title}  | sed 's/ /-/g') >> $GITHUB_OUTPUT
-          filename=$(echo ${name} | sed 's/$/ .md/g') >> $GITHUB_OUTPUT
-          branch="travels/${{ steps.values.outputs.name }}" >> $GITHUB_OUTPUT
+          echo "title=$(echo ${{ github.event.issue.user.name }} goes to ${{ github.event.issue.title }})" >> $GITHUB_OUTPUT
+          echo "name=$(echo $title  | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "filename=$(echo $name | sed 's/$/.md/')" >> $GITHUB_OUTPUT
+          echo "branch=travels/${{ steps.values.outputs.name }}" >> $GITHUB_OUTPUT
   on-event:
     needs: initialize
     name: Create or update pull request
@@ -36,14 +36,14 @@ jobs:
       - name: Initialize values and travel log file
         id: values
         run: |
-          echo "## ${name}" > travel-logs/${{needs.initialize.outputs.filename}}
+          echo "## ${{ needs.initialize.outputs.title }}" > travel-logs/${{needs.initialize.outputs.filename}}
       - name: Create Issue Branch
         uses: gr2m/create-or-update-pull-request-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: "travels/${{ needs.initialize.outputs.name }}"
-          title: "Travel log for: ${{ github.event.issue.title }}"
+          branch: ${{ needs.initialize.outputs.branch }}
+          title: ${{ needs.initialize.outputs.title }}
           body: ${{ github.event.issue.body }}
           path: "travel-logs"
           commit-message: "docs(${{ github.event.issue.user.name }}): Create travel log"
