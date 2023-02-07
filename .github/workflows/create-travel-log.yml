@@ -22,14 +22,14 @@ jobs:
       - name: Initialize values and travel log file
         id: values
         run: |
-          echo "title=$(echo ${{ github.event.issue.user.name }} goes to ${{ github.event.issue.title }})" >> $GITHUB_OUTPUT
-          echo "name=$(echo $title  | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "title=$(echo ${{ github.actor }} goes to ${{ github.event.issue.title }})" >> $GITHUB_OUTPUT
+          echo "name=$(echo $title | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "filename=$(echo $name | sed 's/$/.md/')" >> $GITHUB_OUTPUT
-          echo "branch=$(travels/${{ steps.values.outputs.name }})" >> $GITHUB_OUTPUT
-          echo $("Title is $title") >> $GITHUB_STEP_SUMMARY
-          echo $("Name is $name") >> $GITHUB_STEP_SUMMARY
-          echo $("Filename is $filename") >> $GITHUB_STEP_SUMMARY
-          echo $("Branch is $branch") >> $GITHUB_STEP_SUMMARY
+          echo "branch='travels/${{ steps.values.outputs.name }}'" >> $GITHUB_OUTPUT
+          echo "Title is $title" >> $GITHUB_STEP_SUMMARY
+          echo "Name is $name" >> $GITHUB_STEP_SUMMARY
+          echo "Filename is $filename" >> $GITHUB_STEP_SUMMARY
+          echo "Branch is $branch" >> $GITHUB_STEP_SUMMARY
   on-event:
     needs: initialize
     name: Create or update pull request
