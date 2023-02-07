@@ -32,9 +32,9 @@ jobs:
           echo "filename=$filename" >> $GITHUB_OUTPUT
           branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
-          labels=$(echo "${{ github.event.issue }}" | jq -r '.labels|map(.name)|join(", ")')
+          labels=$(echo "${{ toJSON(github.event.issue) }}" | jq -r '.labels|map(.name)|join(", ")')
           echo "labels=$labels" >> $GITHUB_OUTPUT
-          assignees=$(echo "${{ github.event.issue }}" | jq -r '.assignees|map(.login)|join(", ")')
+          assignees=$(echo "${{ toJSON(github.event.issue) }}" | jq -r '.assignees|map(.login)|join(", ")')
           echo "assignees=$assignees" >> $GITHUB_OUTPUT
           echo "Title is $title" >> $GITHUB_STEP_SUMMARY
           echo "Name is $name" >> $GITHUB_STEP_SUMMARY
