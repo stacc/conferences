@@ -36,7 +36,7 @@ jobs:
           branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
           labels=$(jq -r '.issue.labels|map(.name)|join(", ")' $GITHUB_EVENT_PATH)
-          labels_no_comma=$(jq -r '.issue.labels|map(.name)|join(" ")' $GITHUB_EVENT_PATH)
+          labels_no_comma=$(jq -r '.issue.labels|map(.name)|join("--label ")' $GITHUB_EVENT_PATH)
           echo "labels=$labels" >> $GITHUB_OUTPUT
           echo "labels_no_comma=$labels_no_comma" >> $GITHUB_OUTPUT
           assignees=$(jq -r '.issue.assignees|map(.login)|join(", ")' $GITHUB_EVENT_PATH)
@@ -90,7 +90,7 @@ jobs:
           reviewer: ${{ github.actor }}
           number: '#${{ github.event.issue.number }}'
         run: |
-          $(gh pr create -t "$title" -b "This is the travel log for ${{ needs.initialize.outputs.title }} and closes $number" -label "$labels" -a $assignee -r $reviewer  --base $branch --draft)
+          $(gh pr create -t "$title" -b "This is the travel log for ${{ needs.initialize.outputs.title }} and closes $number" --label $labels -a $assignee -r $reviewer  --base $branch --draft)
   on-issue-closed:
     if: ${{ github.event_name == 'issues' && github.event.action == 'closed' }}
     needs: initialize
