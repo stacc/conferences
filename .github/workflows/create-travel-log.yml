@@ -41,7 +41,7 @@ jobs:
           echo "Filename is $filename" >> $GITHUB_STEP_SUMMARY
           echo "Branch is $branch" >> $GITHUB_STEP_SUMMARY
           echo "Labels are $labels" >> $GITHUB_STEP_SUMMARY
-          echo "Assignees are $assignes" >> $GITHUB_STEP_SUMMARY
+          echo "Assignees are $assignees" >> $GITHUB_STEP_SUMMARY
   on-event:
     needs: initialize
     name: Create or update pull request
@@ -66,4 +66,5 @@ jobs:
           path: "travel-logs"
           commit-message: "docs(${{ github.actor }}): Create travel log"
           labels: ${{ needs.initialize.outputs.labels }}
-          assignees: ${{ needs.initialize.outputs.assignees }}
+          reviewers: ${{ needs.initialize.outputs.assignees }}
+          update-pull-request-title-and-body: true
