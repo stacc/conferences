@@ -80,8 +80,7 @@ jobs:
           echo "## ${{ needs.initialize.outputs.title }}" > travel-logs/${{ needs.initialize.outputs.filename }}
           git add travel-logs/${{ needs.initialize.outputs.filename }}
           git commit -m "feat(travels): ${{ needs.initialize.outputs.title }}"
-          git push origin ${{ needs.initialize.outputs.branch }}
-          git fetch origin
+          git push
       - name: Create Pull request
         if: success()
         env:
@@ -94,7 +93,7 @@ jobs:
           number: '#${{ github.event.issue.number }}'
           GH_TOKEN: ${{ github.token }}
         run: |
-          $(gh pr create -t "$title" -b "This is the travel log for ${{ needs.initialize.outputs.title }} and closes $number" --label $labels -a $assignee -r $reviewer --base $branch --head main --draft)
+          $(gh pr create -t "$title" -b "This is the travel log for $title and closes $number" --label $labels -a $assignee -r $reviewer --base $branch --head main --draft)
   on-issue-closed:
     if: ${{ github.event_name == 'issues' && github.event.action == 'closed' }}
     needs: initialize
