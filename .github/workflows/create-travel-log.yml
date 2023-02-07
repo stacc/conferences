@@ -32,6 +32,7 @@ jobs:
           echo "filename=$filename" >> $GITHUB_OUTPUT
           branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
+          echo ${{ github.event }} | jq
           labels=$(echo jq < ${{ github.event }} | jq -r '.issue.labels|map(.name)|join(", ")')
           echo "labels=$labels" >> $GITHUB_OUTPUT
           assignees=$(echo jq < ${{ github.event }} | jq -r '.issue.assignees|map(.login)|join(", ")')
