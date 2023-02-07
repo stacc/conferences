@@ -80,6 +80,8 @@ jobs:
           git add travel-logs/${{ needs.initialize.outputs.filename }}
           git commit -m "feat(travels): ${{ needs.initialize.outputs.title }}"
           git push origin ${{ needs.initialize.outputs.branch }}
+          git fetch
+          git checkout main
       - name: Create Pull request
         if: success()
         env:
