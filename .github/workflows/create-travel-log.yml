@@ -79,15 +79,15 @@ jobs:
       - name: Create Pull request
         if: success()
         env:
-          title: "${{ needs.initialize.outputs.title }}"
+          title: ${{ needs.initialize.outputs.title }}
           branch: ${{ needs.initialize.outputs.branch }}
-          labels: "${{ needs.initialize.outputs.labels }}"
+          labels: ${{ needs.initialize.outputs.labels }}
           name: ${{ needs.initialize.outputs.name }}
           assignee: ${{ github.event.issue.user.login }}
           reviewer: ${{ github.actor }}
           number: '#${{ github.event.issue.number }}'
         run: |
-          gh pr create -t $title -b "This is the travel log for ${{ needs.initialize.outputs.title }} and closes $number" -label $labels -a $assignee -r $reviewer  --base $branch --draft
+          gh pr create -t "$title" -b "This is the travel log for ${{ needs.initialize.outputs.title }} and closes $number" -label "$labels" -a $assignee -r $reviewer  --base $branch --draft
   on-issue-closed:
     if: ${{ github.event_name == 'issues' && github.event.action == 'closed' }}
     needs: initialize
