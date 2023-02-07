@@ -21,6 +21,7 @@ jobs:
       name: ${{ steps.values.outputs.name }}
       title: ${{ steps.values.outputs.title }}
       labels: ${{ steps.values.outputs.labels }}
+      labels_no_comma: ${{ steps.values.outputs.labels_no_comma }}
       assignees: ${{ steps.values.outputs.assignees }}
     steps:
       - name: Initialize values and travel log file
@@ -35,6 +36,7 @@ jobs:
           branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
           labels=$(jq -r '.issue.labels|map(.name)|join(", ")' $GITHUB_EVENT_PATH)
+          labels_no_comma=$(jq -r '.issue.labels|map(.name)|join(" ")' $GITHUB_EVENT_PATH)
           echo "labels=$labels" >> $GITHUB_OUTPUT
           assignees=$(jq -r '.issue.assignees|map(.login)|join(", ")' $GITHUB_EVENT_PATH)
           echo "assignees=$assignees" >> $GITHUB_OUTPUT
@@ -81,7 +83,7 @@ jobs:
         env:
           title: ${{ needs.initialize.outputs.title }}
           branch: ${{ needs.initialize.outputs.branch }}
-          labels: ${{ needs.initialize.outputs.labels }}
+          labels: ${{ needs.initialize.outputs.labels_no_comma }}
           name: ${{ needs.initialize.outputs.name }}
           assignee: ${{ github.event.issue.user.login }}
           reviewer: ${{ github.actor }}
