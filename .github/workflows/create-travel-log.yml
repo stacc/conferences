@@ -44,6 +44,7 @@ jobs:
       - name: Initialize values and travel log file
         id: values
         run: |
+          mkdir -p travel-logs
           echo "## ${{ needs.initialize.outputs.title }}" > travel-logs/${{needs.initialize.outputs.filename}}
       - name: Create Issue Branch
         uses: gr2m/create-or-update-pull-request-action@v1
