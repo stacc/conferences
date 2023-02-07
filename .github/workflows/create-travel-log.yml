@@ -18,6 +18,8 @@ jobs:
       filename: ${{ steps.values.outputs.filename }}
       name: ${{ steps.values.outputs.name }}
       title: ${{ steps.values.outputs.title }}
+      labels: ${{ steps.values.outputs.labels }}
+      assignees: ${{ steps.values.outputs.assignees }}
     steps:
       - name: Initialize values and travel log file
         id: values
@@ -28,12 +30,18 @@ jobs:
           echo "name=$name" >> $GITHUB_OUTPUT
           filename=$(echo $name | sed 's/$/.md/')
           echo "filename=$filename" >> $GITHUB_OUTPUT
-          branch=$(echo 'travels/'$name)
+          branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
+          labels=$(echo ${{ github.event }} | jq -r '.issue.labels|map(.name)|join(", ")')
+          echo "labels=$labels" >> $GITHUB_OUTPUT
+          assignees=$(echo ${{ github.event }} | jq -r '.issue.assignees|map(.login)|join(", ")')
+          echo "assignees=$assignees" >> $GITHUB_OUTPUT
           echo "Title is $title" >> $GITHUB_STEP_SUMMARY
           echo "Name is $name" >> $GITHUB_STEP_SUMMARY
           echo "Filename is $filename" >> $GITHUB_STEP_SUMMARY
           echo "Branch is $branch" >> $GITHUB_STEP_SUMMARY
+          echo "Labels are $labels" >> $GITHUB_STEP_SUMMARY
+          echo "Assignees are $assignes" >> $GITHUB_STEP_SUMMARY
   on-event:
     needs: initialize
     name: Create or update pull request
@@ -56,5 +64,5 @@ jobs:
           body: ${{ github.event.issue.body }}
           path: "travel-logs"
           commit-message: "docs(${{ github.event.issue.user.name }}): Create travel log"
-          labels: ${{ github.event.issue.labels }}
-          assignees: ${{ github.event.issue.assignees }}
+          labels: ${{ needs.initialize.outputs.labels }}
+          assignees: ${{ needs.initialize.outputs.assignees }}
