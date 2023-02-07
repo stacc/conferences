@@ -32,9 +32,9 @@ jobs:
           echo "filename=$filename" >> $GITHUB_OUTPUT
           branch=$(echo 'travels-'$name)
           echo "branch=$branch" >> $GITHUB_OUTPUT
-          labels=$(jq '.issue.labels|map(.name)|join(", ")' $GITHUB_EVENT_PATH)
+          labels=$(jq -r '.issue.labels|map(.name)|join(", ")' $GITHUB_EVENT_PATH)
           echo "labels=$labels" >> $GITHUB_OUTPUT
-          assignees=$(jq '.issue.assignees|map(.login)|join(", ")' $GITHUB_EVENT_PATH)
+          assignees=$(jq -r '.issue.assignees|map(.login)|join(", ")' $GITHUB_EVENT_PATH)
           echo "assignees=$assignees" >> $GITHUB_OUTPUT
           echo "Title is $title" >> $GITHUB_STEP_SUMMARY
           echo "Name is $name" >> $GITHUB_STEP_SUMMARY
@@ -53,7 +53,7 @@ jobs:
         id: values
         run: |
           mkdir -p travel-logs
-          echo "## ${{ needs.initialize.outputs.title }}" > travel-logs/${{needs.initialize.outputs.filename}}
+          echo "## ${{ needs.initialize.outputs.title }}" >> travel-logs/${{needs.initialize.outputs.filename}}
       - name: Create Issue Branch
         uses: gr2m/create-or-update-pull-request-action@v1
         env:
@@ -61,8 +61,9 @@ jobs:
         with:
           branch: ${{ needs.initialize.outputs.branch }}
           title: ${{ needs.initialize.outputs.title }}
-          body: ${{ github.event.issue.body }}
+          body: |
+            ${{ github.event.issue.body }}
           path: "travel-logs"
-          commit-message: "docs(${{ github.event.issue.user.name }}): Create travel log"
+          commit-message: "docs(${{ github.actor }}): Create travel log"
           labels: ${{ needs.initialize.outputs.labels }}
           assignees: ${{ needs.initialize.outputs.assignees }}
