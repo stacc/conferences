@@ -22,10 +22,14 @@ jobs:
       - name: Initialize values and travel log file
         id: values
         run: |
-          echo "title=$(echo ${{ github.actor }} goes to ${{ github.event.issue.title }})" >> $GITHUB_OUTPUT
-          echo "name=$(echo $title | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-          echo "filename=$(echo $name | sed 's/$/.md/')" >> $GITHUB_OUTPUT
-          echo "branch='travels/${{ steps.values.outputs.name }}'" >> $GITHUB_OUTPUT
+          title=$(echo ${{ github.actor }} goes to ${{ github.event.issue.title }})
+          echo "title=$title" >> $GITHUB_OUTPUT
+          name=$(echo $title | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+          echo "name=$name" >> $GITHUB_OUTPUT
+          filename=$(echo $name | sed 's/$/.md/')
+          echo "filename=$filename" >> $GITHUB_OUTPUT
+          branch='travels/${{ steps.values.outputs.name }}'
+          echo "branch=$branch >> $GITHUB_OUTPUT
           echo "Title is $title" >> $GITHUB_STEP_SUMMARY
           echo "Name is $name" >> $GITHUB_STEP_SUMMARY
           echo "Filename is $filename" >> $GITHUB_STEP_SUMMARY
