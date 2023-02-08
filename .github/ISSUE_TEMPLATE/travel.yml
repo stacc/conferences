@@ -1,5 +1,5 @@
 name: "✈️ Travel/Conference Request"
-description: Create a new travel request ticket for a conference
+description: Create a new travel request ticket for a conference, course or workshop
 title: "<title>"
 labels: ["request","travel"]
 body:
@@ -11,7 +11,7 @@ body:
     id: start_date
     attributes:
       label: "Start Date"
-      description: Start date of the conference
+      description: Start date of the conference/course
       placeholder: "day.month-year"
     validations:
       required: true
@@ -19,7 +19,7 @@ body:
     id: end_date
     attributes:
       label: "End Date"
-      description: End date of the conference
+      description: End date of the conference/course
       placeholder: "day.month-year"
     validations:
       required: true
@@ -35,14 +35,14 @@ body:
     id: conference_name
     attributes:
       label: "Conference Name"
-      description: Conference name
+      description: Conference or course name
       placeholder: "ReactConf2040"
     validations:
       required: true
   - type: textarea
     id: conference_url
     attributes:
-      label: "Conference URL"
+      label: "Conference or course URL"
       description: Conference URL
       placeholder: "https://reactconf.com"
     validations:
@@ -50,11 +50,16 @@ body:
   - type: textarea
     id: summary
     attributes:
-      label: "Summary"
-      description: Provide a brief explanation of the request
+      label: "Relevance"
+      description: Provide a brief explanation of why you have chosen this conference and what you expect to get out of it
       placeholder: Describe in a few lines your request
     validations:
       required: true
+  - type: textarea
+    id: sharing
+    attributes: 
+      label: "How will you share what you've learned?"
+      description: It is mandatory that you share some of what you've learned with the rest of the team. Do you have any thoughts about how you will do that? If not, you can provide this later.
   - type: textarea
     attributes:
       label: Expected costs
@@ -99,3 +104,21 @@ body:
         - "Alone"
         - "With a colleague"
         - "With a team"
+  - type: textarea
+    id: travelingwith
+    attributes:
+      label: Who are you traveling with?
+      description: Only if traveling with others
+  - type: checkboxes
+    id: isApprovedBy
+    attributes:
+      label: Tidsrommet er godkjent av
+      options:
+        - label: Teamleder
+        - label: Fagleder
+        - label: Prosjektleder
+  - type: textarea
+    id: additional
+    attributes:
+      label: Anything else you'd like to say?
+      
